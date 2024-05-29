@@ -12,9 +12,6 @@ import postgres from "postgres";
 const db = postgres({
   host: "localhost",
   port: 5432,
-  database: "",
-  username: "",
-  password: "",
 });
 
 export async function createCitiesTable() {
@@ -83,6 +80,13 @@ export async function getPoints() {
     ORDER BY id`;
 }
 
+export async function getExtendedPoints() {
+  return await db`Select 
+    points.id, points.name, points.description, points.city_id, cities.name AS city_name
+    FROM points LEFT JOIN cities ON points.city_id = cities.id
+    ORDER BY id`;
+}
+
 export async function getPointById(id) {
   return await db`
     Select * FROM points
@@ -111,4 +115,14 @@ export async function getPointsOfCity(id) {
   FROM points
   WHERE city_id=${id};
   `;
+}
+
+export async function createMapsTableForCities() {
+  await db`CREATE TABLE IF NOT EXISTS citymaps 
+    (
+        id SERIAL PRIMARY KEY,
+        maproute TEXT NOT NULL,
+        city_id INTEGER REFERENCES cities(id)
+    )
+    `;
 }

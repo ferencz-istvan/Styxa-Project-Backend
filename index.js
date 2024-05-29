@@ -14,6 +14,8 @@ import {
   updatePoint,
   deletePoint,
   getPointsOfCity,
+  getExtendedPoints,
+  createMapsTableForCities,
 } from "./db/db.js";
 
 const port = 3000;
@@ -97,6 +99,11 @@ server.get("/points", async (req, res) => {
   res.status(200).json(points);
 });
 
+server.get("/extendedpoints", async (req, res) => {
+  const points = await getExtendedPoints();
+  res.status(200).json(points);
+});
+
 server.get("/points/:id", async (req, res) => {
   const id = req.params.id;
   const pointById = await getPointById(id);
@@ -133,6 +140,6 @@ server.use((_req, res) => {
 server.listen(port, async () => {
   console.log(`Elindult a szerverem: localhost: ${port}`);
 
-  /* await createCitiesTable();
-  await createInterestPointsTable(); */
+  /*  await createMapsTableForCities(); */
+  /*await createInterestPointsTable(); */
 });
