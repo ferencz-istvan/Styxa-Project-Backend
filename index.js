@@ -16,6 +16,11 @@ import {
   getPointsOfCity,
   getExtendedPoints,
   createMapsTableForCities,
+  getMaps,
+  getMapById,
+  createMap,
+  updateMap,
+  deleteMap,
 } from "./db/db.js";
 
 const port = 3000;
@@ -132,6 +137,47 @@ server.get("/pointsofcity/:id", async (req, res) => {
   console.log(`A(z) ${id} id-jű város pontjainak lekérése`);
   res.status(200).json(pointsOfCity);
 });
+
+////////////////////////////////////////////////////////
+
+server.get("/citymaps", async (req, res) => {
+  const maps = await getMaps();
+  res.status(200).json(maps);
+});
+
+server.get("/citymaps/:id", async (req, res) => {
+  const id = req.params.id;
+  const mapById = await getMapById(id);
+  console.log(`A lekért térkép id-je: ${id}`);
+  res.status(200).json(mapById[0]);
+});
+
+server.post("/citymaps", async (req, res) => {
+  const maproute = req.body.maproute;
+  const city_id = req.body.city_id;
+  await createMap(maproute, city_id);
+  return res.status(200).json({
+    maproute: maproute,
+    city_id: city_id,
+  });
+});
+
+server.put("/citymaps/:id", async (req, res) => {
+  const maproute = req.body.maproute;
+  const city_id = req.body.city_id;
+  const id = req.params.id;
+  await updateMap(id, maproute, city_id);
+  const updatedMap = await getCityById(id);
+  return res.status(200).json(updatedMap[0]);
+});
+
+server.delete("/citymaps/:id", async (req, res) => {
+  const id = req.params.id;
+  await deleteMap(id);
+  res.status(204).send("Torolve");
+});
+
+////////////////////////////////////////////////////////
 
 server.use((_req, res) => {
   res.json({ errorMesssage: "Can't find this page" }).status(404);

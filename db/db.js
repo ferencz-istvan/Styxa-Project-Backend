@@ -126,3 +126,38 @@ export async function createMapsTableForCities() {
     )
     `;
 }
+
+///////////////////////////////////
+
+export async function getMaps() {
+  return await db`
+  Select * FROM citymaps 
+  ORDER BY id;`;
+}
+
+export async function getMapById(id) {
+  return await db`
+    Select * FROM citymaps
+    WHERE id = ${id}
+    `;
+}
+
+export async function createMap(maproute, city_id) {
+  await db`INSERT INTO citymaps(maproute, city_id) 
+    VALUES (${maproute}, ${city_id})`;
+}
+
+export async function updateMap(id, maproute, city_id) {
+  await db`
+    UPDATE citymaps
+    SET maproute = ${maproute}, city_id = ${city_id}
+    WHERE id = ${id} 
+    `;
+}
+
+export async function deleteMap(id) {
+  await db`
+    DELETE FROM citymaps
+    WHERE id=${id}
+    `;
+}
